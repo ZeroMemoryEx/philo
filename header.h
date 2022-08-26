@@ -13,7 +13,9 @@ typedef struct s_list
     int             *table_control;
 	int             time_to_die;
     int             time_to_eat;
+    int             f_control;
     int             time_to_sleep;
+    long long int   ctime;
     int             num_of_rounds;
     pthread_mutex_t mutexx;
     pthread_t       *p_philo;

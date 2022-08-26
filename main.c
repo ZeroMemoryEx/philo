@@ -2,13 +2,14 @@
 #include <stdio.h>
 #include <pthread.h>
 #include "header.h"
+       #include <sys/time.h>
 
 int glob;
 
-long long current_timestamp() {
+long long int current_timestamp() {
     struct timeval te; 
     gettimeofday(&te, NULL); // get current time
-    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    long long int milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
     return milliseconds;
 }
 long long int getindexbyid(t_list *philos)
@@ -16,14 +17,17 @@ long long int getindexbyid(t_list *philos)
 	int i = 0;
 	pthread_t self_id = pthread_self();
 	while (philos->p_philo[i] != self_id)
+	{
+		if (philos->p_philo[i]==0)
+			break;
 		i++;
+	}
 	return (i);
 }
 
 void philo_take_fork(t_list *philos)
 {
-			pthread_mutex_lock(&philos->mutexx);
-
+	pthread_mutex_lock(&philos->mutexx);
 	printf("%lld philosopher %d has taken fork\n",current_timestamp() - philos->timest ,getindexbyid(philos));
 	pthread_mutex_unlock(&philos->mutexx);
 
@@ -47,44 +51,52 @@ void philo_start_thinking(t_list *philos)
 void philo_died(t_list *philos)
 {
 	pthread_mutex_lock(&philos->mutexx);
+
 	printf("%lld philosopher %d has died\n",current_timestamp() - philos->timest ,getindexbyid(philos));
-	exit(-1);
 	pthread_mutex_unlock(&philos->mutexx);
 
 }
 
-int f_control;
 
+void *check_death(t_list *philo_inf)
+{
+	while (1)
+	{
+		if (philo_inf->ctime < current_timestamp())
+		{
+			philo_died(philo_inf);
+			exit(-1);
+		}
+		sleep(0.2);
+	}
+	
+}
+
+void checkeat(t_list *philo)
+{
+	if ((philo->f_control >= philo->nphilo))
+	{
+
+		exit(1);
+	}
+}
 void *routinee(t_list *philo_inf)
 {
-
-	int co_e = 0;
-	while(1)
+	pthread_t tid ;
+	philo_inf->ctime = current_timestamp();
+	pthread_create(&tid,NULL,&check_death,philo_inf);
+	pthread_detach(tid);
+	while (1)
 	{
-		if (philo_inf->table_control[getindexbyid(philo_inf)] == 0)
-		{
-			co_e++;
-			philo_take_fork(philo_inf);
-		}
-
-		if (philo_inf->table_control[(getindexbyid(philo_inf)+1) % 5] == 0)
-		{
-			philo_take_fork(philo_inf);
-			co_e++;
-		}
-		if (co_e == 2)
-		{
-			philo_start_eating(philo_inf);
-			
-			pthread_mutex_lock(&philo_inf->mutexx);
-			f_control++;
-			pthread_mutex_unlock(&philo_inf->mutexx);
-			co_e = 0;
-		}
-		if (f_control == philo_inf->nphilo)
-			exit(-1);
-		sleep(5);
+		philo_take_fork(philo_inf);
+		if (philo_inf->f_control > philo_inf->p_philo)
+			exit(1);
+		philo_start_eating(philo_inf);
+		philo_inf->f_control++;
+		sleep(1);
+	
 	}
+	
 
 }
 
@@ -95,6 +107,9 @@ void init_that_shit(char **argv, t_list *philost)
 	philost->time_to_die = ft_atoi(argv[2]);
 	philost->time_to_eat = ft_atoi(argv[3]);
 	philost->time_to_sleep = ft_atoi(argv[4]);
+	philost->timest = 0;
+	philost->f_control = 0;
+	philost->ctime = 0;
 }
 
 int main(int argc , char **argv)
@@ -127,7 +142,7 @@ int main(int argc , char **argv)
 	printf("number of rounds : %s \n",argv[5]);
 
 	i = 0;
-	philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo);
+	philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
 	while (i < philost.nphilo )
 	{
 		pthread_create(&philost.p_philo[i],NULL,&routinee,(void*)&philost);
