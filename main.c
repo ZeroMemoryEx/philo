@@ -16,19 +16,24 @@ long long int getindexbyid(t_list *philos)
 {
 	int i = 0;
 	pthread_t self_id = pthread_self();
-	while (philos->p_philo[i] != self_id)
+	while (i < philos->nphilo)
 	{
-		if (philos->p_philo[i]==0)
+		
+		if (self_id == philos->p_philo[i])
+		{
+
 			break;
+		}
 		i++;
 	}
 	return (i);
+	
 }
 
 void philo_take_fork(t_list *philos)
 {
 	pthread_mutex_lock(&philos->mutexx);
-	printf("%lld philosopher %d has taken fork\n",current_timestamp() - philos->timest ,getindexbyid(philos));
+	printf("%lld philosopher %d has taken fork\n",current_timestamp() - philos->ctime ,getindexbyid(philos));
 	pthread_mutex_unlock(&philos->mutexx);
 
 }
@@ -36,8 +41,8 @@ void philo_take_fork(t_list *philos)
 void philo_start_eating(t_list *philos)
 {
 		pthread_mutex_lock(&philos->mutexx);
-
-	printf("%lld philosopher %d has started eating\n",current_timestamp() - philos->timest ,getindexbyid(philos));
+	
+	printf("%lld philosopher %d has started eating\n",current_timestamp() - philos->ctime,getindexbyid(philos));
 		pthread_mutex_unlock(&philos->mutexx);
 
 }
@@ -45,14 +50,13 @@ void philo_start_eating(t_list *philos)
 void philo_start_thinking(t_list *philos)
 {
 	
-	printf("%lld philosopher %d has started thinking\n",current_timestamp() - philos->timest ,getindexbyid(philos));
+	printf("%lld philosopher %d has started thinking\n",current_timestamp() - philos->ctime ,getindexbyid(philos));
 }
 
 void philo_died(t_list *philos)
 {
 	pthread_mutex_lock(&philos->mutexx);
-
-	printf("%lld philosopher %d has died\n",current_timestamp() - philos->timest ,getindexbyid(philos));
+	printf("%lld philosopher %d has died\n",current_timestamp() - philos->ctime ,getindexbyid(philos));
 	pthread_mutex_unlock(&philos->mutexx);
 
 }
@@ -60,47 +64,68 @@ void philo_died(t_list *philos)
 
 void *check_death(t_list *philo_inf)
 {
+	//printf("%lld , %lld \n",philo_inf->ctime , current_timestamp() - philo_inf->timest);
+	//return 0;
 	while (1)
 	{
-		if (philo_inf->ctime < current_timestamp())
+		if (philo_inf->time_to_die <= current_timestamp() - philo_inf->ctime)
 		{
 			philo_died(philo_inf);
 			exit(-1);
 		}
-		sleep(0.2);
 	}
-	
 }
 
 void checkeat(t_list *philo)
 {
-	if ((philo->f_control >= philo->nphilo))
+	if ((philo->f_control > philo->nphilo))
 	{
-
+		printf("round ended\n");
 		exit(1);
 	}
 }
 void *routinee(t_list *philo_inf)
 {
 	pthread_t tid ;
-	philo_inf->ctime = current_timestamp();
+	philo_inf->ctime = current_timestamp() ;
 	pthread_create(&tid,NULL,&check_death,philo_inf);
 	pthread_detach(tid);
 	while (1)
 	{
-		philo_take_fork(philo_inf);
-		if (philo_inf->f_control > philo_inf->p_philo)
-			exit(1);
-		philo_start_eating(philo_inf);
 		philo_inf->f_control++;
+		checkeat(philo_inf);
+
+		philo_take_fork(philo_inf);
+		//pthread_mutex_unlock(&philo_inf->mutexx);
+		
+		philo_start_eating(philo_inf);
 		sleep(1);
-	
+		//
+	}
+}
+
+void chkondkhal(t_list *phil)
+{
+	pthread_mutex_lock(&phil->mutexx);
+	printf("%d confirmed philo dkhal l7afla [+]\n",getindexbyid(phil));
+	pthread_mutex_unlock(&phil->mutexx);
+}
+void *routinexe(t_list *philo_inf)
+{
+	pthread_t tid ;
+	philo_inf->ctime = current_timestamp() ;
+	pthread_create(&tid,NULL,&check_death,philo_inf);
+	pthread_detach(tid);
+	printf("%d philo dkhal l7afla \n",getindexbyid(philo_inf));
+	while (1)
+	{
+		 chkondkhal(philo_inf);
+	break;
+		//
 	}
 	
 
 }
-
-
 void init_that_shit(char **argv, t_list *philost)
 {
 	philost->nphilo = ft_atoi(argv[1]);
@@ -152,7 +177,9 @@ int main(int argc , char **argv)
 	while (i < philost.nphilo)
 	{
 		pthread_join(philost.p_philo[i],NULL);
+		//pthread_detach(philost.p_philo[i]);
 		i++;
 	}
+	printf("ay zki\n");
 	
 }
