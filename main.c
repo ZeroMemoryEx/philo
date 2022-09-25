@@ -29,6 +29,7 @@ long long int getindexbyid(t_list *philos)
 	return (i);
 	
 }
+pthread_mutex_t chopstick[5];
 
 void philo_take_fork(t_list *philos)
 {
@@ -92,40 +93,30 @@ void *routinee(t_list *philo_inf)
 	pthread_detach(tid);
 	while (1)
 	{
-		philo_inf->f_control++;
-		checkeat(philo_inf);
-
+		philo_start_thinking(philo_inf);
+		
+		pthread_mutex_lock(&chopstick[getindexbyid(philo_inf)]);
+		
 		philo_take_fork(philo_inf);
-		//pthread_mutex_unlock(&philo_inf->mutexx);
+		
+		pthread_mutex_lock(&chopstick[(getindexbyid(philo_inf) + 1) % philo_inf->nphilo]);
 		
 		philo_start_eating(philo_inf);
-		sleep(1);
+		
+		sleep(philo_inf->time_to_eat);
+		
+		checkeat(philo_inf);
+		
+		philo_inf->f_control++;
+		pthread_mutex_unlock(&chopstick[getindexbyid(philo_inf)]);
+
+  		pthread_mutex_unlock(&chopstick[(getindexbyid(philo_inf) + 1) % philo_inf->nphilo]);
 		//
 	}
 }
 
-void chkondkhal(t_list *phil)
-{
-	pthread_mutex_lock(&phil->mutexx);
-	printf("%d confirmed philo dkhal l7afla [+]\n",getindexbyid(phil));
-	pthread_mutex_unlock(&phil->mutexx);
-}
-void *routinexe(t_list *philo_inf)
-{
-	pthread_t tid ;
-	philo_inf->ctime = current_timestamp() ;
-	pthread_create(&tid,NULL,&check_death,philo_inf);
-	pthread_detach(tid);
-	printf("%d philo dkhal l7afla \n",getindexbyid(philo_inf));
-	while (1)
-	{
-		 chkondkhal(philo_inf);
-	break;
-		//
-	}
-	
 
-}
+
 void init_that_shit(char **argv, t_list *philost)
 {
 	philost->nphilo = ft_atoi(argv[1]);
@@ -156,9 +147,12 @@ int main(int argc , char **argv)
 
 	//philost.table_control
 	int i = 0;
-	while(i < philost.nphilo)
-		philost.table_control[i++] = 0;
 	
+	while(i < philost.nphilo)
+	{
+		pthread_mutex_init(&chopstick[i], NULL);
+		philost.table_control[i++] = 0;
+	}
 	philost.timest = current_timestamp();
 	printf("number of philos : %d \n",philost.nphilo);
 	printf("time to die : %d \n",philost.time_to_die);
@@ -168,6 +162,7 @@ int main(int argc , char **argv)
 
 	i = 0;
 	philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
+	philost._3wach9 = malloc(sizeof(pthread_mutex_t *) * philost.nphilo + 1);
 	while (i < philost.nphilo )
 	{
 		pthread_create(&philost.p_philo[i],NULL,&routinee,(void*)&philost);

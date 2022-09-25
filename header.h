@@ -16,6 +16,8 @@ typedef struct s_list
     int             f_control;
     int             time_to_sleep;
     long long int   ctime;
+    int             *indg;
+    pthread_mutex_t             *_3wach9;
     int             num_of_rounds;
     pthread_mutex_t mutexx;
     pthread_t       *p_philo;
