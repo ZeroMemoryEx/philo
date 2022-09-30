@@ -3,6 +3,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <limits.h>
+#include <pthread.h>
 
 void	ft_av_putchar(int op);
 int	ft_atoi(const char *str);
@@ -10,7 +11,6 @@ typedef struct s_list
 {
 	int				nphilo;
     long long int   timest;
-    int             *table_control;
 	int             time_to_die;
     int             time_to_eat;
     int             f_control;
