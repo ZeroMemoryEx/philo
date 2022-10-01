@@ -90,6 +90,7 @@ void *routinee(t_list *philo_inf)
 	philo_inf->ctime = current_timestamp() ;
 	pthread_create(&tid,NULL,&check_death,philo_inf);
 	pthread_detach(tid);
+
 	while (1)
 	{
 		philo_start_thinking(philo_inf);
@@ -145,11 +146,10 @@ int main(int argc , char **argv)
 	}
 
 	int i = 0;
-	chopstick = malloc(sizeof(pthread_mutex_t *) * philost.nphilo + 1);
+	chopstick = malloc(sizeof(pthread_mutex_t ) * philost.nphilo + 1);
 	printf("args error \n");
 	while(i < philost.nphilo)
 	{
-		//chopstick[i] = NULL;
 		pthread_mutex_init(&chopstick[i], NULL);
 		i++;
 	}
@@ -166,6 +166,7 @@ int main(int argc , char **argv)
 		pthread_create(&philost.p_philo[i],NULL,&routinee,(void*)&philost);
 		i++;
 	}
+
 	i = 0;
 	while (i < philost.nphilo)
 	{
