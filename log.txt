@@ -1,0 +1,31 @@
+number of philos : 4 
+time to die : 4000 
+time toclea eat : 100 
+time to sleep: 200 
+number of rounds : (null) 
+10 philosopher 1 has started thinking
+10 philosopher 1 has taken fork
+10 philosopher 1 has taken fork
+10 philosopher 1 has started eating
+10 philosopher 2 has started thinking
+10 philosopher 0 has started thinking
+10 philosopher 0 has taken fork
+10 philosopher 0 has taken fork
+10 philosopher 0 has started eating
+10 philosopher 3 has started thinking
+10 philosopher 3 has taken fork
+10 philosopher 3 has taken fork
+10 philosopher 3 has started eating
+314 philosopher 1 has taken fork
+314 philosopher 1 has taken fork
+314 philosopher 1 has started eating
+314 philosopher 3 has taken fork
+314 philosopher 3 has taken fork
+314 philosopher 3 has started eating
+620 philosopher 3 has taken fork
+620 philosopher 3 has taken fork
+620 philosopher 3 has started eating
+622 philosopher 1 has taken fork
+622 philosopher 1 has taken fork
+622 philosopher 1 has started eating
+round ended
