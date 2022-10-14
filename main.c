@@ -14,14 +14,15 @@ int
 }
 int 
 getindexbyid(
-	t_list *philos)
+	void *philos)
 {
+	t_list *p = (t_list*)philos;
 	int i = 0;
 	pthread_t self_id = pthread_self();
-	while (i < philos->nphilo)
+	while (i < p->nphilo)
 	{
 		
-		if (self_id == philos->p_philo[i])
+		if (self_id == p->p_philo[i])
 		{
 
 			break;
@@ -97,44 +98,42 @@ checkeat(
 		exit(1);
 	}
 }
-void 
-*routinee(
-	t_list *philo_inf)
+void *routinee(
+	void *philo_inf)
 {
-	pthread_t tid ;
-	philo_inf->ctime = current_timestamp() ;
-	pthread_create(&tid,NULL,&check_death,philo_inf);
-	pthread_detach(tid);
+	t_list *p = (t_list*)philo_inf;
+	//pthread_t tid ;
+	p->ctime = current_timestamp() ;
+	//pthread_create(&tid,NULL,&check_death,p);
+	//pthread_detach(tid);
 
 	while (1)
 	{
-				pthread_mutex_lock(&chopstick[(getindexbyid(philo_inf) + 1) % philo_inf->nphilo]);
-		philo_take_fork(philo_inf);
+		pthread_mutex_lock(chopstick[(getindexbyid(p) + 1) % p->nphilo]);
+		philo_take_fork(p);
 
-		pthread_mutex_lock(&chopstick[getindexbyid(philo_inf)]);
+		pthread_mutex_lock(chopstick[getindexbyid(p)]);
 		
 		
+		philo_take_fork(p);
 		
-		philo_take_fork(philo_inf);
+		philo_start_eating(p);
 		
-		philo_start_eating(philo_inf);
+		usleep(p->time_to_eat *  1000);
 		
-		usleep(philo_inf->time_to_eat *  1000);
+		//checkeat(p);
 		
-		//checkeat(philo_inf);
-		
-		//philo_inf->f_control++;
-  		pthread_mutex_unlock(&chopstick[(getindexbyid(philo_inf) + 1) % philo_inf->nphilo]);
+		//p->f_control++;
+  		pthread_mutex_unlock(chopstick[(getindexbyid(p) + 1) % p->nphilo]);
 
-		pthread_mutex_unlock(&chopstick[getindexbyid(philo_inf)]);
+		pthread_mutex_unlock(chopstick[getindexbyid(p)]);
 
 
-		usleep(philo_inf->time_to_sleep *  1000);
+		usleep(p->time_to_sleep *  1000);
 
-		philo_start_thinking(philo_inf);
-
-		break;
+		philo_start_thinking(p);
 	}
+	return 0;
 }
 
 
@@ -162,9 +161,7 @@ main(
 	t_list philost;
 	if (argc == 4 || argc == 5)
 	{
-		
 		init_that_shit(argv,&philost);
-		
 		
 	}
 	else
@@ -172,25 +169,23 @@ main(
 		printf("args error \n");
 		exit(-1);
 	}
-
 	int i = 0;
+
 	chopstick = malloc(sizeof(pthread_mutex_t ) * philost.nphilo + 1);
 	//philost.mutexx  = NULL;
 
-
-		pthread_mutex_init(&philost.mutexx, NULL);
-
-	if (chopstick)
+	pthread_mutex_init(&philost.mutexx, NULL);
+	
+	if (*chopstick)
 	{
 		while(i < philost.nphilo)
 		{
-			pthread_mutex_init(&chopstick[i], NULL);
+			pthread_mutex_init(chopstick[i], NULL);
 			i++;
 		}
-	}
+	}	
 	else
 		exit(EXIT_FAILURE);
-
 	philost.timest = current_timestamp();
 	printf("number of philos : %d \n",philost.nphilo);
 	printf("time to die : %d \n",philost.time_to_die);
@@ -199,18 +194,12 @@ main(
 	printf("number of rounds : %s \n",argv[5]);
 	i = 0;
 	philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
-	while (i < philost.nphilo )
-	{
-		pthread_create(&philost.p_philo[i],NULL,&routinee,&philost);
-		usleep(40);
-		i++;
-	}
 
-	i = 0;
 	while (i < philost.nphilo)
 	{
-		pthread_join(philost.p_philo[i],NULL);
+		pthread_create(&philost.p_philo[i],NULL,&routinee,&philost);
 		i++;
+		usleep(500);
 	}
 	
 }
