@@ -4,6 +4,7 @@
 # include <unistd.h>
 # include <limits.h>
 #include <pthread.h>
+#include <stdatomic.h>
 
 void	ft_av_putchar(int op);
 int	ft_atoi(const char *str);
@@ -16,11 +17,12 @@ typedef struct s_list
     int             f_control;
     int             time_to_sleep;
     long long int   ctime;
-    int             *indg;
-    pthread_mutex_t             *_3wach9;
+    int				*indg;
     int             num_of_rounds;
+	atomic_int		i;
     pthread_mutex_t mutexx;
     pthread_t       *p_philo;
+	pthread_mutex_t	*chopstick;
 }t_list;
 
 #endif

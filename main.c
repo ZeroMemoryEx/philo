@@ -3,74 +3,12 @@
 #include "header.h"
 #include <sys/time.h>
 
-int glob;
-
 int 
 	current_timestamp() {
     struct timeval te; 
     gettimeofday(&te, NULL); // get current time
     long long int milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
     return milliseconds;
-}
-int 
-getindexbyid(
-	void *philos)
-{
-	t_list *p = (t_list*)philos;
-	int i = 0;
-	pthread_t self_id = pthread_self();
-	while (i < p->nphilo)
-	{
-		
-		if (self_id == p->p_philo[i])
-		{
-
-			break;
-		}
-		i++;
-	}
-	return (i);
-	
-}
-pthread_mutex_t **chopstick = NULL;
-
-void 
-philo_take_fork(
-	t_list *philos)
-{
-	pthread_mutex_lock(&philos->mutexx);
-	printf("%d philosopher %d has taken fork\n",current_timestamp() - (int)philos->ctime ,getindexbyid(philos));
-	pthread_mutex_unlock(&philos->mutexx);
-
-}
-
-void 
-philo_start_eating(
-	t_list *philos)
-{
-	pthread_mutex_lock(&philos->mutexx);
-	printf("%d philosopher %d has started eating\n",current_timestamp() - (int)philos->ctime,getindexbyid(philos));
-	pthread_mutex_unlock(&philos->mutexx);
-
-}
-
-void 
-philo_start_thinking(
-	t_list *philos)
-{
-	pthread_mutex_lock(&philos->mutexx);
-	printf("%d philosopher %d has started thinking\n",current_timestamp() - (int)philos->ctime ,getindexbyid(philos));
-	pthread_mutex_unlock(&philos->mutexx);
-
-}
-
-void 
-philo_died(
-	t_list *philos)
-{
-	pthread_mutex_lock(&philos->mutexx);
-	printf("%d philosopher %d has died\n",current_timestamp() - (int)philos->ctime ,getindexbyid(philos));
-	pthread_mutex_unlock(&philos->mutexx);
 }
 
 
@@ -82,8 +20,8 @@ void
 	{
 		if (philo_inf->time_to_die <= current_timestamp() - philo_inf->ctime)
 		{
-			//philo_died(philo_inf);
-			//exit(-1);
+			philo_died(philo_inf);
+			exit(-1);
 		}
 	}
 }
@@ -98,45 +36,45 @@ checkeat(
 		exit(1);
 	}
 }
-void *routinee(
+
+void
+	*routinee(
 	void *philo_inf)
 {
 	t_list *p = (t_list*)philo_inf;
-	//pthread_t tid ;
+
 	p->ctime = current_timestamp() ;
-	//pthread_create(&tid,NULL,&check_death,p);
-	//pthread_detach(tid);
+
+	int i = p->i;
 
 	while (1)
 	{
-		pthread_mutex_lock(chopstick[(getindexbyid(p) + 1) % p->nphilo]);
-		philo_take_fork(p);
+		pthread_mutex_lock(&p->chopstick[(i + 1) % p->nphilo]);
 
-		pthread_mutex_lock(chopstick[getindexbyid(p)]);
-		
-		
-		philo_take_fork(p);
-		
-		philo_start_eating(p);
-		
+		printf("%d take fork \n",i);
+
+		pthread_mutex_lock(&p->chopstick[i]);
+
+		printf("%d take fork \n",i);
+
+		printf("%d  start eating \n",i);
+
 		usleep(p->time_to_eat *  1000);
-		
-		//checkeat(p);
-		
-		//p->f_control++;
-  		pthread_mutex_unlock(chopstick[(getindexbyid(p) + 1) % p->nphilo]);
 
-		pthread_mutex_unlock(chopstick[getindexbyid(p)]);
+  		pthread_mutex_unlock(&p->chopstick[(i + 1) % p->nphilo]);
 
+		pthread_mutex_unlock(&p->chopstick[i]);
 
 		usleep(p->time_to_sleep *  1000);
 
-		philo_start_thinking(p);
+		pthread_mutex_lock(&p->mutexx);
+
+		printf("%d  start thinking \n",i);
+
+		pthread_mutex_unlock(&p->mutexx);
 	}
 	return 0;
 }
-
-
 
 void 
 init_that_shit(
@@ -152,7 +90,6 @@ init_that_shit(
 	philost->ctime = 0;
 }
 
-
 int
 main(
 	int argc ,
@@ -162,7 +99,6 @@ main(
 	if (argc == 4 || argc == 5)
 	{
 		init_that_shit(argv,&philost);
-		
 	}
 	else
 	{
@@ -171,34 +107,41 @@ main(
 	}
 	int i = 0;
 
-	chopstick = malloc(sizeof(pthread_mutex_t ) * philost.nphilo + 1);
-	//philost.mutexx  = NULL;
-
+	philost.chopstick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
+	if (!philost.chopstick)
+		return (-1);
 	pthread_mutex_init(&philost.mutexx, NULL);
-	
-	if (*chopstick)
+	if (philost.chopstick)
 	{
 		while(i < philost.nphilo)
 		{
-			pthread_mutex_init(chopstick[i], NULL);
+			pthread_mutex_init(&philost.chopstick[i], NULL);
 			i++;
 		}
 	}	
 	else
+	{
+		printf("error\n");
 		exit(EXIT_FAILURE);
+	}
 	philost.timest = current_timestamp();
 	printf("number of philos : %d \n",philost.nphilo);
 	printf("time to die : %d \n",philost.time_to_die);
 	printf("time toclea eat : %d \n",philost.time_to_eat);
 	printf("time to sleep: %d \n",philost.time_to_sleep);
 	printf("number of rounds : %s \n",argv[5]);
-	i = 0;
+	philost.i = 0;
 	philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
-
-	while (i < philost.nphilo)
+	if (!philost.p_philo)
+		return (-1);
+	while (philost.i < philost.nphilo)
 	{
-		pthread_create(&philost.p_philo[i],NULL,&routinee,&philost);
-		i++;
+		pthread_create(&philost.p_philo[philost.i], NULL, routinee, &philost);
+		usleep(50);
+		philost.i++;
+	}
+	while(1)
+	{
 		usleep(500);
 	}
 	
