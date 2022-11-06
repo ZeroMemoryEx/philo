@@ -10,7 +10,18 @@ int
     long long int milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
     return milliseconds;
 }
+void ft_sleep(time_t sec)
+{
 
+	int tim = current_timestamp();
+	while(1)
+	{
+		int sleep = sec + tim;
+		if (sleep <= current_timestamp())
+			break;
+		usleep(99);
+	}
+}
 
 void 
 *check_death(
@@ -59,14 +70,14 @@ void
 
 		printf("%lld %d  start eating \n",current_timestamp() - p->ctime ,i + 1);
 
-		usleep(p->time_to_eat *  1000);
-
+		//usleep(p->time_to_eat *  1000);
+		ft_sleep(p->time_to_eat);
   		pthread_mutex_unlock(&p->chopstick[(i + 1) % p->nphilo]);
 
 		pthread_mutex_unlock(&p->chopstick[i]);
 
-		usleep(p->time_to_sleep *  1000);
-
+		//usleep(p->time_to_sleep *  1000);
+		ft_sleep(p->time_to_sleep);
 		pthread_mutex_lock(&p->mutexx);
 
 		printf("%lld %d  start thinking \n",current_timestamp() - p->ctime ,i + 1);
