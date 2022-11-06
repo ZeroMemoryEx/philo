@@ -5,7 +5,7 @@ void	ft_av_putchar(int op)
 {
 	if (op == 99)
 		exit(-1);
-	write(2, "Error\n", 6);
+	write(2, "param error\n", 12);
 	exit(-1);
 }
 

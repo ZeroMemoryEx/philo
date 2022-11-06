@@ -51,13 +51,13 @@ void
 	{
 		pthread_mutex_lock(&p->chopstick[(i + 1) % p->nphilo]);
 
-		printf("%d take fork \n",i);
+		printf("%lld %d take fork \n",current_timestamp() - p->ctime,i);
 
 		pthread_mutex_lock(&p->chopstick[i]);
 
-		printf("%d take fork \n",i);
+		printf("%lld %d take fork \n",current_timestamp() - p->ctime,i);
 
-		printf("%d  start eating \n",i);
+		printf("%lld %d  start eating \n",current_timestamp() - p->ctime,i);
 
 		usleep(p->time_to_eat *  1000);
 
@@ -69,7 +69,7 @@ void
 
 		pthread_mutex_lock(&p->mutexx);
 
-		printf("%d  start thinking \n",i);
+		printf("%lld %d  start thinking \n",current_timestamp() - p->ctime,i);
 
 		pthread_mutex_unlock(&p->mutexx);
 	}
