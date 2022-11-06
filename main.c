@@ -20,7 +20,7 @@ void
 	{
 		if (philo_inf->time_to_die <= current_timestamp() - philo_inf->ctime)
 		{
-			philo_died(philo_inf);
+			printf("philo diead\n");
 			exit(-1);
 		}
 	}
@@ -110,7 +110,6 @@ main(
 	philost.chopstick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
 	if (!philost.chopstick)
 		return (-1);
-	pthread_mutex_init(&philost.mutexx, NULL);
 	if (philost.chopstick)
 	{
 		while(i < philost.nphilo)
