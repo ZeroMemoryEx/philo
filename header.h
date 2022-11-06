@@ -11,6 +11,7 @@ int	ft_atoi(const char *str);
 typedef struct s_list
 {
 	int				nphilo;
+	int				timex;
     long long int   timest;
 	int             time_to_die;
     int             time_to_eat;

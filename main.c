@@ -51,13 +51,13 @@ void
 	{
 		pthread_mutex_lock(&p->chopstick[(i + 1) % p->nphilo]);
 
-		printf("%lld %d take fork \n",current_timestamp() - p->ctime,i);
+		printf("%lld %d take fork \n",current_timestamp() - p->ctime,i + 1);
 
 		pthread_mutex_lock(&p->chopstick[i]);
 
-		printf("%lld %d take fork \n",current_timestamp() - p->ctime,i);
+		printf("%lld %d take fork \n",current_timestamp() - p->ctime ,i + 1);
 
-		printf("%lld %d  start eating \n",current_timestamp() - p->ctime,i);
+		printf("%lld %d  start eating \n",current_timestamp() - p->ctime ,i + 1);
 
 		usleep(p->time_to_eat *  1000);
 
@@ -69,7 +69,7 @@ void
 
 		pthread_mutex_lock(&p->mutexx);
 
-		printf("%lld %d  start thinking \n",current_timestamp() - p->ctime,i);
+		printf("%lld %d  start thinking \n",current_timestamp() - p->ctime ,i + 1);
 
 		pthread_mutex_unlock(&p->mutexx);
 	}
@@ -106,7 +106,7 @@ main(
 		exit(-1);
 	}
 	int i = 0;
-
+	char *death_spv  = malloc(sizeof(char) * (philost.nphilo));
 	philost.chopstick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
 	if (!philost.chopstick)
 		return (-1);
@@ -114,6 +114,7 @@ main(
 	{
 		while(i < philost.nphilo)
 		{
+			death_spv[i] = 0;
 			pthread_mutex_init(&philost.chopstick[i], NULL);
 			i++;
 		}
@@ -139,9 +140,19 @@ main(
 		usleep(50);
 		philost.i++;
 	}
+	int ck = 0;
 	while(1)
 	{
-		usleep(500);
+		while(ck < philost.nphilo)
+		{
+			if (death_spv[ck])
+			{
+				printf("%d died\n",ck);
+				exit(-1);
+			}
+			ck++;
+		}
+		ck = 0;
 	}
 	
 }
