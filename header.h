@@ -24,6 +24,7 @@ typedef struct s_list
     pthread_mutex_t mutexx;
     pthread_t       *p_philo;
 	pthread_mutex_t	*chopstick;
+	unsigned int	*death_spv;
 }t_list;
 
 #endif

@@ -54,35 +54,45 @@ void
 {
 	t_list *p = (t_list*)philo_inf;
 
+	pthread_mutex_lock(&p->mutexx);
 	p->ctime = current_timestamp() ;
-
+	pthread_mutex_unlock(&p->mutexx);
 	int i = p->i;
 
 	while (1)
 	{
+		
 		pthread_mutex_lock(&p->chopstick[(i + 1) % p->nphilo]);
 
+		pthread_mutex_lock(&p->mutexx);
 		printf("%lld %d take fork \n",current_timestamp() - p->ctime,i + 1);
+		pthread_mutex_unlock(&p->mutexx);
 
 		pthread_mutex_lock(&p->chopstick[i]);
 
+		pthread_mutex_lock(&p->mutexx);
 		printf("%lld %d take fork \n",current_timestamp() - p->ctime ,i + 1);
+		pthread_mutex_unlock(&p->mutexx);
 
+		pthread_mutex_lock(&p->mutexx);
 		printf("%lld %d  start eating \n",current_timestamp() - p->ctime ,i + 1);
+		pthread_mutex_unlock(&p->mutexx);
 
-		//usleep(p->time_to_eat *  1000);
 		ft_sleep(p->time_to_eat);
+
   		pthread_mutex_unlock(&p->chopstick[(i + 1) % p->nphilo]);
 
 		pthread_mutex_unlock(&p->chopstick[i]);
 
-		//usleep(p->time_to_sleep *  1000);
 		ft_sleep(p->time_to_sleep);
+
 		pthread_mutex_lock(&p->mutexx);
 
 		printf("%lld %d  start thinking \n",current_timestamp() - p->ctime ,i + 1);
+		p->death_spv[i] = (current_timestamp());
 
 		pthread_mutex_unlock(&p->mutexx);
+
 	}
 	return 0;
 }
@@ -117,7 +127,7 @@ main(
 		exit(-1);
 	}
 	int i = 0;
-	char *death_spv  = malloc(sizeof(char) * (philost.nphilo));
+	philost.death_spv  = malloc(sizeof(unsigned int) * (philost.nphilo));
 	philost.chopstick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
 	if (!philost.chopstick)
 		return (-1);
@@ -125,7 +135,7 @@ main(
 	{
 		while(i < philost.nphilo)
 		{
-			death_spv[i] = 0;
+			philost.death_spv[i] = 0;
 			pthread_mutex_init(&philost.chopstick[i], NULL);
 			i++;
 		}
@@ -135,6 +145,7 @@ main(
 		printf("error\n");
 		exit(EXIT_FAILURE);
 	}
+	pthread_mutex_init(&philost.mutexx,NULL);
 	philost.timest = current_timestamp();
 	printf("number of philos : %d \n",philost.nphilo);
 	printf("time to die : %d \n",philost.time_to_die);
@@ -156,8 +167,9 @@ main(
 	{
 		while(ck < philost.nphilo)
 		{
-			if (death_spv[ck])
+			if (philost.time_to_die < philost.death_spv[ck])
 			{
+				pthread_mutex_lock(&philost.mutexx);
 				printf("%d died\n",ck);
 				exit(-1);
 			}
