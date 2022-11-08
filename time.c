@@ -26,5 +26,8 @@ void ft_sleep(time_t sec)
 
 int main()
 {
-	ft_sleep(4000);
+	 unsigned int now = current_timestamp();
+
+	 sleep(3);
+	printf("%ld elapsed \n",current_timestamp() - now);
 }
