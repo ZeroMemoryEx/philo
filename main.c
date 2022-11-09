@@ -13,14 +13,14 @@
 
 void	ft_sleep(time_t sec)
 {
-
 	long long int tim = current_timestamp();
+	long long int sleep = sec + tim;
 	while (1)
 	{
-		long long int sleep = sec + tim;
+		
 		if (sleep <= current_timestamp())
 			break;
-		usleep(50);
+		usleep(100);
 	}
 }
 
@@ -93,6 +93,8 @@ init_that_shit(
 	philost->time_to_die = ft_atoi(argv[2]);
 	philost->time_to_eat = ft_atoi(argv[3]);
 	philost->time_to_sleep = ft_atoi(argv[4]);
+	philost->time_to_sleep = ft_atoi(argv[4]);
+	philost->start = current_timestamp();
 }
 
 int main(int argc , char **argv)
@@ -145,7 +147,7 @@ int main(int argc , char **argv)
 		philo = malloc(sizeof(t_philo ) * 1);
 		philo->i = i;
 		philo->eats = 0;
-		philo->start = current_timestamp();
+		philo->start = philost.start;
 		philo->time_to_die = philost.time_to_die;
 		philo->time_to_eat = philost.time_to_eat;
 		philo->time_to_sleep = philost.time_to_sleep;

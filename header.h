@@ -21,6 +21,8 @@ typedef struct s_list
     pthread_t       *p_philo;
 	pthread_mutex_t	*chopstick;
 	pthread_mutex_t *meatround;
+	long long int		start;
+
 	long long int	*death_spv;
 }t_list;
 
