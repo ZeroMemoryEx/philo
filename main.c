@@ -6,8 +6,8 @@
  long long int 
 	current_timestamp() {
     struct timeval te; 
-    gettimeofday(&te, NULL); // get current time
-    long long int milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    gettimeofday(&te, NULL); 
+    long long int milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; 
     return milliseconds;
 }
 
@@ -38,9 +38,8 @@ void
 	}
 }
 
-void check_wach_chi_wld_9hba_mat(t_philo *nigga)
+void check_eat_rounds(t_philo *nigga)
 {
-				//printf("start ended\n");
 	int i = 0;
 	int pass = 0;
 	while(i < nigga->nphilo)
@@ -154,7 +153,7 @@ int main(int argc , char **argv)
 	else
 	{
 		printf("error\n");
-		exit(EXIT_FAILURE); // not allowed
+		exit(EXIT_FAILURE); 
 	}
 	pthread_mutex_init(&philost.mutexx,NULL);
 
@@ -190,7 +189,7 @@ int main(int argc , char **argv)
 	{
 		pthread_mutex_lock(&philo->meatround);
 			
-		check_wach_chi_wld_9hba_mat(philo);
+		check_eat_rounds(philo);
 
 		pthread_mutex_unlock(&philo->meatround);
 		ck = 0;
