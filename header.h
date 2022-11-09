@@ -15,13 +15,11 @@ typedef struct s_list
      long long int	timest;
 	 long long int	time_to_die;
     int             time_to_eat;
-    int             f_control;
     int             time_to_sleep;
-	long long int	ctime;
     int				*indg;
     int             num_of_rounds;
     pthread_mutex_t mutexx;
-    pthread_mutex_t *dick;
+    pthread_mutex_t *mudeath;
     pthread_t       *p_philo;
 	pthread_mutex_t	*chopstick;
 	pthread_mutex_t *meatround;
@@ -41,7 +39,7 @@ typedef struct s_philo
 	int					num_of_rounds;
 	int					eats;
 	pthread_mutex_t		*mutexx;
-    pthread_mutex_t 	*dick;
+    pthread_mutex_t 	*mudeath;
     pthread_mutex_t 	meatround;
 	pthread_mutex_t		*chopstick;
 } t_philo;

@@ -24,20 +24,6 @@ void ft_sleep(time_t sec)
 	}
 }
 
-void 
-*check_death(
-	t_list *philo_inf)
-{
-	while (1)
-	{
-		if (philo_inf->time_to_die <= current_timestamp() - philo_inf->ctime)
-		{
-			printf("philo diead\n");
-			exit(-1);
-		}
-	}
-}
-
 void check_eat_rounds(t_philo *philo)
 {
 	int i = 0;
@@ -80,9 +66,9 @@ void
 		pthread_mutex_lock(p->mutexx);
 		printf("%lld %d  start eating \n",current_timestamp() - p->start ,i + 1);
 		pthread_mutex_unlock(p->mutexx);
-		pthread_mutex_lock(&p->dick[i]);
+		pthread_mutex_lock(&p->mudeath[i]);
 		p->death_spv[i] =  current_timestamp();
-		pthread_mutex_unlock(&p->dick[i]);
+		pthread_mutex_unlock(&p->mudeath[i]);
 		pthread_mutex_lock(&p->meatround);
 		p->eats++;
 		pthread_mutex_unlock(&p->meatround);
@@ -109,15 +95,13 @@ init_that_shit(
 	philost->time_to_die = ft_atoi(argv[2]);
 	philost->time_to_eat = ft_atoi(argv[3]);
 	philost->time_to_sleep = ft_atoi(argv[4]);
-	philost->timest = 0;
-	philost->f_control = 0;
-	philost->ctime = 0;
+	philost->timest = current_timestamp();
 }
 
 int main(int argc , char **argv)
 {
-	t_list philost;
-	t_philo *philo;
+	t_list	philost;
+	t_philo	*philo;
 	if (argc == 5 || argc == 6)
 	{
 		init_that_shit(argv,&philost);
@@ -130,12 +114,11 @@ int main(int argc , char **argv)
 		exit(-1);
 	}
 	int i = 0;
-	philost.timest = current_timestamp();
 
 	philost.death_spv  = malloc(sizeof(  long long int) * (philost.nphilo));
-	philost.chopstick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
-	philost.dick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
-	philost.meatround = malloc(sizeof(pthread_mutex_t) * (philost.nphilo + 1));
+	philost.chopstick = malloc(sizeof(pthread_mutex_t) * (philost.nphilo ));
+	philost.mudeath = malloc(sizeof(pthread_mutex_t));
+	philost.meatround = malloc(sizeof(pthread_mutex_t));
 	if (!philost.chopstick)
 		return (-1);
 	if (philost.chopstick)
@@ -144,7 +127,7 @@ int main(int argc , char **argv)
 		{
 			philost.death_spv[i] = current_timestamp();
 			pthread_mutex_init(&philost.chopstick[i], NULL);
-			pthread_mutex_init(&philost.dick[i],NULL);
+			pthread_mutex_init(&philost.mudeath[i],NULL);
 			pthread_mutex_init(&philost.meatround[i],NULL);
 
 			i++;
@@ -152,8 +135,7 @@ int main(int argc , char **argv)
 	}	
 	else
 	{
-		printf("error\n");
-		exit(EXIT_FAILURE); 
+		return(-1); 
 	}
 	pthread_mutex_init(&philost.mutexx,NULL);
 
@@ -173,7 +155,7 @@ int main(int argc , char **argv)
 		philo->time_to_sleep = philost.time_to_sleep;
 		philo->mutexx = &philost.mutexx;
 		philo->meatround = philost.meatround[0];
-		philo->dick = philost.dick;
+		philo->mudeath = philost.mudeath;
 		philo->chopstick = philost.chopstick;
 		philo->nphilo = philost.nphilo;
 		philo->death_spv = philost.death_spv;
@@ -195,7 +177,7 @@ int main(int argc , char **argv)
 		ck = 0;
 		while(ck < philost.nphilo)
 		{
-			pthread_mutex_lock(&philost.dick[ck]);
+			pthread_mutex_lock(&philost.mudeath[ck]);
 
 
 			if ((current_timestamp() - philost.death_spv[ck]) >= philost.time_to_die)
@@ -204,7 +186,7 @@ int main(int argc , char **argv)
 				printf("%lld %d died\n",current_timestamp() - philost.death_spv[ck], ck + 1);
 				exit(-1);
 			}
-			pthread_mutex_unlock(&philost.dick[ck]);
+			pthread_mutex_unlock(&philost.mudeath[ck]);
 			usleep(100);
 			ck++;
 		}
