@@ -38,19 +38,19 @@ void
 	}
 }
 
-void check_eat_rounds(t_philo *nigga)
+void check_eat_rounds(t_philo *philo)
 {
 	int i = 0;
 	int pass = 0;
-	while(i < nigga->nphilo)
+	while(i < philo->nphilo)
 	{
-		if (nigga[i].eats == nigga->num_of_rounds)
+		if (philo[i].eats == philo->num_of_rounds)
 			pass++;
 		else
 			break;
-		if (pass == nigga->num_of_rounds)
+		if (pass == philo->num_of_rounds)
 		{
-			pthread_mutex_lock(nigga->mutexx);
+			pthread_mutex_lock(philo->mutexx);
 			exit(-1);
 		}
 	}
