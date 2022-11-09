@@ -12,36 +12,37 @@ typedef struct s_list
 {
 	int				nphilo;
 	int				timex;
-     long long int				timest;
-	 long long int             time_to_die;
+     long long int	timest;
+	 long long int	time_to_die;
     int             time_to_eat;
     int             f_control;
     int             time_to_sleep;
-     long long int   ctime;
+	long long int	ctime;
     int				*indg;
     int             num_of_rounds;
-	// atomic_int		i;// not allowed
     pthread_mutex_t mutexx;
     pthread_mutex_t *dick;
     pthread_t       *p_philo;
 	pthread_mutex_t	*chopstick;
-	 long long int	*death_spv;
+	pthread_mutex_t *meatround;
+
+	long long int	*death_spv;
 }t_list;
 
 typedef struct s_philo
 {
-		int				nphilo;
-
+	int					nphilo;
 	int					i;
-	 long long int 	start;
+	long long int		start;
 	int					time_to_eat;
-	 long long int					time_to_die;
+	long long int		time_to_die;
 	int					time_to_sleep;
-		 long long int	*death_spv;
-
+	long long int		*death_spv;
 	int					num_of_rounds;
-	pthread_mutex_t 	*mutexx;
+	int					eats;
+	pthread_mutex_t		*mutexx;
     pthread_mutex_t 	*dick;
+    pthread_mutex_t 	meatround;
 	pthread_mutex_t		*chopstick;
 } t_philo;
 #endif
