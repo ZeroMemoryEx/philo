@@ -1,13 +1,13 @@
 #ifndef HEADER_H
 # define HEADER_H
 # include <stdlib.h>
-# include <unistd.h>
 # include <limits.h>
 #include <pthread.h>
 #include <stdatomic.h>
+#include	<unistd.h>
+#include	<stdio.h>
+#include	<sys/time.h>
 
-void	ft_av_putchar(int op);
-int		ft_atoi(const char *str);
 typedef struct s_list
 {
 	int				nphilo;
@@ -17,10 +17,10 @@ typedef struct s_list
     int             time_to_sleep;
     int             num_of_rounds;
     pthread_mutex_t mutexx;
-    pthread_mutex_t *mudeath;
+    pthread_mutex_t	*mudeath;
     pthread_t       *p_philo;
 	pthread_mutex_t	*chopstick;
-	pthread_mutex_t *meatround;
+	pthread_mutex_t	meatround;
 	long long int		start;
 
 	long long int	*death_spv;
@@ -44,4 +44,13 @@ typedef struct s_philo
 	pthread_mutex_t		*chopstick;
 } t_philo;
 
+void			ft_av_putchar(int op);
+int				ft_atoi(const char *str);
+int				struct_cloner(t_list *src, t_philo *dest, int argc);
+void			ft_sleep(time_t sec);
+void			*routinee(void *philo_inf);
+void			check_eat_rounds(t_philo *philo);
+int				init_that_shit(char	**argv, t_list *philost);
+long long int	c_time();
+int				check_death(t_philo *philo, t_list *philost);
 #endif
