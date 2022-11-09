@@ -11,21 +11,23 @@
     return milliseconds;
 }
 
-void ft_sleep(time_t sec)
+void	ft_sleep(time_t sec)
 {
 
-	 long long int tim = current_timestamp();
-	while(1)
+	long long int tim = current_timestamp();
+	while (1)
 	{
-		 long long int sleep = sec + tim;
+		long long int sleep = sec + tim;
 		if (sleep <= current_timestamp())
 			break;
-		usleep(99);
+		usleep(50);
 	}
 }
 
 void check_eat_rounds(t_philo *philo)
 {
+	if (philo->n_argc != 6)
+		return ;
 	int i = 0;
 	int pass = 0;
 	while(i < philo->nphilo)
@@ -42,10 +44,6 @@ void check_eat_rounds(t_philo *philo)
 	}
 }
 
-unsigned long int ctimev(unsigned int now)
-{
-	return (current_timestamp() - now);
-}
 void
 	*routinee(
 	void *philo_inf)
@@ -88,14 +86,13 @@ void
 
 void 
 init_that_shit(
-	char **argv, 
+	char **argv,
 	t_list *philost )
 {
 	philost->nphilo = ft_atoi(argv[1]);
 	philost->time_to_die = ft_atoi(argv[2]);
 	philost->time_to_eat = ft_atoi(argv[3]);
 	philost->time_to_sleep = ft_atoi(argv[4]);
-	philost->timest = current_timestamp();
 }
 
 int main(int argc , char **argv)
@@ -106,7 +103,7 @@ int main(int argc , char **argv)
 	{
 		init_that_shit(argv,&philost);
 		if (argc == 6)
-			philost.num_of_rounds = ft_atoi(argv[5]);;
+			philost.num_of_rounds = ft_atoi(argv[5]);
 	}
 	else
 	{
@@ -129,7 +126,6 @@ int main(int argc , char **argv)
 			pthread_mutex_init(&philost.chopstick[i], NULL);
 			pthread_mutex_init(&philost.mudeath[i],NULL);
 			pthread_mutex_init(&philost.meatround[i],NULL);
-
 			i++;
 		}
 	}	
@@ -158,6 +154,7 @@ int main(int argc , char **argv)
 		philo->mudeath = philost.mudeath;
 		philo->chopstick = philost.chopstick;
 		philo->nphilo = philost.nphilo;
+		philo->n_argc = argc;
 		philo->death_spv = philost.death_spv;
 		philo->num_of_rounds = philost.num_of_rounds;
 		pthread_create(&philost.p_philo[i], NULL, routinee, philo);
