@@ -146,7 +146,6 @@ int main(int argc , char **argv)
 	//printf("time toclea eat : %d \n",philost.time_to_eat);
 	//printf("time to sleep: %d \n",philost.time_to_sleep);
 	//printf("number of rounds : %s \n",argv[5]);
-	philost.i = 0;
 	philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo );
 	if (!philost.p_philo)
 		return (-1);
@@ -157,10 +156,11 @@ int main(int argc , char **argv)
 	// 	usleep(50);
 	// 	philost.i++;
 	// }
-	while (philost.i < philost.nphilo)
+	i = 0;
+	while (i < philost.nphilo)
 	{
 		philo = malloc(sizeof(t_philo ) * 1);
-		philo->i = philost.i;
+		philo->i = i;
 		philo->start = philost.timest;
 		philo->time_to_die = philost.time_to_die;
 		philo->time_to_eat = philost.time_to_eat;
@@ -170,10 +170,10 @@ int main(int argc , char **argv)
 		philo->chopstick = philost.chopstick;
 		philo->nphilo = philost.nphilo;
 		philo->death_spv = philost.death_spv;
-		pthread_create(&philost.p_philo[philost.i], NULL, routinee, philo);
-		pthread_detach(philost.p_philo[philost.i]);
-		usleep(500);
-		philost.i++;
+		pthread_create(&philost.p_philo[i], NULL, routinee, philo);
+		pthread_detach(philost.p_philo[i]);
+		// usleep(500);
+		i++;
 	}
 	int ck;
 	// usleep(500);

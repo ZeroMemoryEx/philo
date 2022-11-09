@@ -20,7 +20,7 @@ typedef struct s_list
      long long int   ctime;
     int				*indg;
     int             num_of_rounds;
-	atomic_int		i;// not allowed
+	// atomic_int		i;// not allowed
     pthread_mutex_t mutexx;
     pthread_mutex_t *dick;
     pthread_t       *p_philo;
