@@ -6,7 +6,7 @@
 /*   By: ahadane <ahadane@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 01:11:25 by ahadane           #+#    #+#             */
-/*   Updated: 2022/11/10 20:51:33 by ahadane          ###   ########.fr       */
+/*   Updated: 2022/11/10 21:02:06 by ahadane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	struct_cloner(t_list *src, t_philo *dest, int argc)
 	i = 0;
 	while (i < src->nphilo)
 	{
-		//dest = malloc(sizeof(t_philo));
 		dest->i = i;
 		dest->eats = src->eats;
 		dest->start = src->start;

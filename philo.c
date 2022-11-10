@@ -26,7 +26,7 @@ void	check_eat_rounds(t_philo *philo)
 		if (philo->eats[i] >= philo->num_of_rounds)
 			pass++;
 		else
-			break;
+			break ;
 		if (pass > philo->num_of_rounds)
 		{
 			pthread_mutex_lock(philo->mutexx);
@@ -124,7 +124,7 @@ int	main(int argc, char **argv)
 
 	if ((argc == 5 || argc == 6) && !init_that_shit(argv, &philost))
 	{
-		philo = malloc(sizeof(t_philo) );
+		philo = malloc(sizeof(t_philo));
 		philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
 		if (argc == 6)
 			philost.num_of_rounds = ft_atoi(argv[5]);
