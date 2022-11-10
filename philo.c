@@ -76,7 +76,7 @@ int	init_that_shit(char	**argv, t_list *philost)
 	philost->start = c_time();
 	philost->death_spv = malloc(sizeof(long long int) * (philost->nphilo));
 	philost->chopstick = malloc(sizeof(pthread_mutex_t) * (philost->nphilo));
-	philost->mudeath = malloc(sizeof(pthread_mutex_t));	
+	philost->mudeath = malloc(sizeof(pthread_mutex_t));
 	if (!philost->death_spv || !philost->chopstick || !philost->mudeath)
 		return (-1);
 	while (i < philost->nphilo)
@@ -133,8 +133,7 @@ int	main(int argc, char **argv)
 	pthread_mutex_init(&philost.mutexx, NULL);
 	pthread_mutex_init(&philost.meatround, NULL);
 	printf("%d\n", philost.nphilo);
-
-	philost.p_philo = (pthread_t *)malloc(sizeof(pthread_t ) * philost.nphilo);
+	philost.p_philo = (pthread_t *)malloc(sizeof(pthread_t) * philost.nphilo);
 	if (!philost.p_philo || struct_cloner(&philost, philo, argc))
 		return (-1);
 	return (check_death(philo, &philost));
