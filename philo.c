@@ -119,7 +119,7 @@ int	main(int argc, char **argv)
 	t_list	philost;
 	t_philo	*philo;
 
-	philo = malloc(sizeof(t_philo *));
+	philo = malloc(sizeof(t_philo));
 	if ((argc == 5 || argc == 6) && !init_that_shit(argv, &philost))
 	{
 		if (argc == 6)
@@ -132,8 +132,8 @@ int	main(int argc, char **argv)
 	}
 	pthread_mutex_init(&philost.mutexx, NULL);
 	pthread_mutex_init(&philost.meatround, NULL);
-	printf("%d\n", philost.nphilo);
 	philost.p_philo = (pthread_t *)malloc(sizeof(pthread_t) * philost.nphilo);
+	free(philo);
 	if (!philost.p_philo || struct_cloner(&philost, philo, argc))
 		return (-1);
 	return (check_death(philo, &philost));

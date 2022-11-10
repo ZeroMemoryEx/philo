@@ -6,7 +6,7 @@
 /*   By: ahadane <ahadane@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 01:11:25 by ahadane           #+#    #+#             */
-/*   Updated: 2022/11/10 01:29:00 by ahadane          ###   ########.fr       */
+/*   Updated: 2022/11/10 18:12:29 by ahadane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	struct_cloner(t_list *src, t_philo *dest, int argc)
 	i = 0;
 	while (i < src->nphilo)
 	{
+		dest = malloc(sizeof(t_philo));
 		dest->i = i;
 		dest->eats = 0;
 		dest->start = src->start;
@@ -54,7 +55,6 @@ int	struct_cloner(t_list *src, t_philo *dest, int argc)
 		pthread_create(&src->p_philo[i], NULL, routinee, dest);
 		pthread_detach(src->p_philo[i++]);
 		usleep(50);
-		dest = malloc(sizeof(t_philo));
 	}
 	return (0);
 }
