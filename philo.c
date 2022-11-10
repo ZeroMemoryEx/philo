@@ -23,15 +23,16 @@ void	check_eat_rounds(t_philo *philo)
 	pass = 0;
 	while (i < philo->nphilo)
 	{
-		if (philo[i].eats == philo->num_of_rounds)
+		if (philo->eats[i] >= philo->num_of_rounds)
 			pass++;
 		else
-			break ;
-		if (pass == philo->num_of_rounds)
+			break;
+		if (pass > philo->num_of_rounds)
 		{
 			pthread_mutex_lock(philo->mutexx);
 			exit(-1);
 		}
+		i++;
 	}
 }
 
@@ -53,7 +54,7 @@ void	*routinee(void *philo_inf)
 		p->death_spv[i] = c_time();
 		pthread_mutex_unlock(&p->mudeath[i]);
 		pthread_mutex_lock(&p->meatround);
-		p->eats++;
+		p->eats[i]++;
 		pthread_mutex_unlock(&p->meatround);
 		ft_sleep(p->time_to_eat);
 		pthread_mutex_unlock(&p->chopstick[(i + 1) % p->nphilo]);
@@ -76,11 +77,13 @@ int	init_that_shit(char	**argv, t_list *philost)
 	philost->start = c_time();
 	philost->death_spv = malloc(sizeof(long long int) * (philost->nphilo));
 	philost->chopstick = malloc(sizeof(pthread_mutex_t) * (philost->nphilo));
+	philost->eats = malloc(sizeof(int) * (philost->nphilo));
 	philost->mudeath = malloc(sizeof(pthread_mutex_t));
 	if (!philost->death_spv || !philost->chopstick || !philost->mudeath)
 		return (-1);
 	while (i < philost->nphilo)
 	{
+		philost->eats[i] = 0;
 		philost->death_spv[i] = c_time();
 		pthread_mutex_init(&philost->chopstick[i], NULL);
 		pthread_mutex_init(&philost->mudeath[i++], NULL);
@@ -119,9 +122,10 @@ int	main(int argc, char **argv)
 	t_list	philost;
 	t_philo	*philo;
 
-	philo = malloc(sizeof(t_philo));
 	if ((argc == 5 || argc == 6) && !init_that_shit(argv, &philost))
 	{
+		philo = malloc(sizeof(t_philo) );
+		philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
 		if (argc == 6)
 			philost.num_of_rounds = ft_atoi(argv[5]);
 	}
@@ -132,8 +136,6 @@ int	main(int argc, char **argv)
 	}
 	pthread_mutex_init(&philost.mutexx, NULL);
 	pthread_mutex_init(&philost.meatround, NULL);
-	philost.p_philo = (pthread_t *)malloc(sizeof(pthread_t) * philost.nphilo);
-	free(philo);
 	if (!philost.p_philo || struct_cloner(&philost, philo, argc))
 		return (-1);
 	return (check_death(philo, &philost));

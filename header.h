@@ -33,6 +33,8 @@ typedef struct s_list
 	pthread_mutex_t	meatround;
 	long long int	start;
 	long long int	*death_spv;
+		int					*eats;
+
 }t_list;
 
 typedef struct s_philo
@@ -45,7 +47,7 @@ typedef struct s_philo
 	int					time_to_sleep;
 	long long int		*death_spv;
 	int					num_of_rounds;
-	int					eats;
+	int					*eats;
 	int					n_argc;
 	pthread_mutex_t		*mutexx;
 	pthread_mutex_t		*mudeath;

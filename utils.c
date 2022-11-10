@@ -6,7 +6,7 @@
 /*   By: ahadane <ahadane@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 01:11:25 by ahadane           #+#    #+#             */
-/*   Updated: 2022/11/10 18:12:29 by ahadane          ###   ########.fr       */
+/*   Updated: 2022/11/10 20:51:33 by ahadane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ long long int	c_time(void)
 	long long int	milliseconds;
 
 	gettimeofday(&te, NULL);
-	milliseconds = te.tv_sec * 1000LL + te.tv_usec / 1000;
+	milliseconds = te.tv_sec * 1000 + te.tv_usec / 1000;
 	return (milliseconds);
 }
 
@@ -37,9 +37,9 @@ int	struct_cloner(t_list *src, t_philo *dest, int argc)
 	i = 0;
 	while (i < src->nphilo)
 	{
-		dest = malloc(sizeof(t_philo));
+		//dest = malloc(sizeof(t_philo));
 		dest->i = i;
-		dest->eats = 0;
+		dest->eats = src->eats;
 		dest->start = src->start;
 		dest->time_to_die = src->time_to_die;
 		dest->time_to_eat = src->time_to_eat;
@@ -55,6 +55,7 @@ int	struct_cloner(t_list *src, t_philo *dest, int argc)
 		pthread_create(&src->p_philo[i], NULL, routinee, dest);
 		pthread_detach(src->p_philo[i++]);
 		usleep(50);
+		dest = malloc(sizeof(t_philo));
 	}
 	return (0);
 }
@@ -92,6 +93,6 @@ void	ft_sleep(time_t sec)
 	{
 		if (sleep <= c_time())
 			return ;
-		usleep(30);
+		usleep(250);
 	}
 }
