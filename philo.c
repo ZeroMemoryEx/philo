@@ -12,28 +12,25 @@
 
 #include	"header.h"
 
-void	check_eat_rounds(t_philo *philo)
+void	check_eat_rounds(t_philo *philox)
 {
-	int	i;
-	int	pass;
+	int		i;
+	int		pass;
+	t_philo	philo;
 
-	if (philo->n_argc != 6)
+	philo = *philox;
+	if (philo.n_argc != 6)
 		return ;
 	i = 0;
 	pass = 0;
-	while (i < philo->nphilo)
+	while (i < philo.nphilo)
 	{
-		if (philo->eats[i] >= philo->num_of_rounds)
-			pass++;
-		else
-			break ;
-		if (pass > philo->num_of_rounds)
-		{
-			pthread_mutex_lock(philo->mutexx);
-			exit(-1);
-		}
+		if (philo.eats[i] != philo.num_of_rounds)
+			return ;
 		i++;
 	}
+	printf("sim stop\n");
+	pthread_mutex_lock(philox->mutexx);
 }
 
 void	*routinee(void *philo_inf)
@@ -101,7 +98,7 @@ int	check_death(t_philo *philo, t_list *ph1)
 		check_eat_rounds(philo);
 		pthread_mutex_unlock(&philo->meatround);
 		i = 0;
-		while (i < ph1->nphilo)
+		while (i < philo->nphilo)
 		{
 			pthread_mutex_lock(&ph1->mudeath[i]);
 			if ((c_time() - ph1->death_spv[i]) >= ph1->time_to_die)
