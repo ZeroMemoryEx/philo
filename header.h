@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   header.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahadane <ahadane@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahadane <marvin@42.fr>   		       	    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 00:53:28 by ahadane           #+#    #+#             */
 /*   Updated: 2022/11/10 00:57:17 by ahadane          ###   ########.fr       */
@@ -15,7 +15,6 @@
 # include	<stdlib.h>
 # include	<limits.h>
 # include	<pthread.h>
-# include	<stdatomic.h>
 # include	<unistd.h>
 # include	<stdio.h>
 # include	<sys/time.h>
@@ -23,7 +22,6 @@
 typedef struct s_list
 {
 	int				nphilo;
-	int				timex;
 	long long int	time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
@@ -64,4 +62,5 @@ void			check_eat_rounds(t_philo *philo);
 int				init_that_shit(char	**argv, t_list *philost);
 long long int	c_time(void);
 int				check_death(t_philo *philo, t_list *philost);
+void			ft_printf(t_philo *p, int philo, char *str, long long int time);
 #endif
