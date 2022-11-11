@@ -71,12 +71,13 @@ int	init_that_shit(char	**argv, t_list *philost)
 	philost->time_to_die = ft_atoi(argv[2]);
 	philost->time_to_eat = ft_atoi(argv[3]);
 	philost->time_to_sleep = ft_atoi(argv[4]);
+	philost->p_philo = malloc(sizeof(pthread_t) * (philost->nphilo));
 	philost->start = c_time();
 	philost->death_spv = malloc(sizeof(long long int) * (philost->nphilo));
 	philost->chopstick = malloc(sizeof(pthread_mutex_t) * (philost->nphilo));
 	philost->eats = malloc(sizeof(int) * (philost->nphilo));
 	philost->mudeath = malloc(sizeof(pthread_mutex_t));
-	if (!philost->death_spv || !philost->chopstick || !philost->mudeath)
+	if (!philost->death_spv || !philost->chopstick || !philost->mudeath || !philost->p_philo)
 		return (-1);
 	while (i < philost->nphilo)
 	{
@@ -122,7 +123,8 @@ int	main(int argc, char **argv)
 	if ((argc == 5 || argc == 6) && !init_that_shit(argv, &philost))
 	{
 		philo = malloc(sizeof(t_philo));
-		philost.p_philo = malloc(sizeof(pthread_t) * philost.nphilo + 1);
+		//printf("%d \n",philost.nphilo);
+		
 		if (argc == 6)
 			philost.num_of_rounds = ft_atoi(argv[5]);
 	}
@@ -133,7 +135,7 @@ int	main(int argc, char **argv)
 	}
 	pthread_mutex_init(&philost.mutexx, NULL);
 	pthread_mutex_init(&philost.meatround, NULL);
-	if (!philost.p_philo || struct_cloner(&philost, philo, argc))
+	if (struct_cloner(&philost, philo, argc))
 		return (-1);
 	return (check_death(philo, &philost));
 }

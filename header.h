@@ -26,9 +26,9 @@ typedef struct s_list
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				num_of_rounds;
+	pthread_t		*p_philo;
 	pthread_mutex_t	mutexx;
 	pthread_mutex_t	*mudeath;
-	pthread_t		*p_philo;
 	pthread_mutex_t	*chopstick;
 	pthread_mutex_t	meatround;
 	long long int	start;
