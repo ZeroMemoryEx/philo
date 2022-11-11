@@ -6,7 +6,7 @@
 /*   By: ahadane <ahadane@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 01:11:25 by ahadane           #+#    #+#             */
-/*   Updated: 2022/11/11 01:07:03 by ahadane          ###   ########.fr       */
+/*   Updated: 2022/11/11 02:32:26 by ahadane          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	struct_cloner(t_list *src, t_philo *dest, int argc)
 		dest->mutexx = &src->mutexx;
 		dest->meatround = src->meatround;
 		dest->mudeath = src->mudeath;
-		dest->chopstick = src->chopstick;
+		dest->stick = src->stick;
 		dest->nphilo = src->nphilo;
 		dest->n_argc = argc;
 		dest->death_spv = src->death_spv;

@@ -29,10 +29,11 @@ typedef struct s_list
 	pthread_t		*p_philo;
 	pthread_mutex_t	mutexx;
 	pthread_mutex_t	*mudeath;
-	pthread_mutex_t	*chopstick;
+	pthread_mutex_t	*stick;
 	pthread_mutex_t	meatround;
 	long long int	start;
 	long long int	*death_spv;
+	int				end_it;
 	int				*eats;
 
 }t_list;
@@ -52,7 +53,7 @@ typedef struct s_philo
 	pthread_mutex_t		*mutexx;
 	pthread_mutex_t		*mudeath;
 	pthread_mutex_t		meatround;
-	pthread_mutex_t		*chopstick;
+	pthread_mutex_t		*stick;
 }	t_philo;
 
 void			ft_av_putchar(int op);
@@ -61,8 +62,8 @@ int				struct_cloner(t_list *src, t_philo *dest, int argc);
 void			ft_sleep(time_t sec);
 void			*routinee(void *philo_inf);
 void			check_eat_rounds(t_philo *philo);
-int				init_that_shit(char	**argv, t_list *philost);
+int				init_that_shit(char	**argv, t_list *p_lst);
 long long int	c_time(void);
-int				check_death(t_philo *philo, t_list *philost);
+int				check_death(t_philo *philo, t_list *p_lst);
 void			ft_printf(t_philo *p, int philo, char *str, long long int time);
 #endif
