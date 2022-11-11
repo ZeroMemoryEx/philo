@@ -130,7 +130,6 @@ int	main(int argc, char **argv)
 			if (ft_atoi(argv[5]) == 0)
 				return (-1);
 		}
-		p_lst.end_it = 1;
 	}
 	else
 	{

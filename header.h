@@ -33,7 +33,6 @@ typedef struct s_list
 	pthread_mutex_t	meatround;
 	long long int	start;
 	long long int	*death_spv;
-	int				end_it;
 	int				*eats;
 
 }t_list;
