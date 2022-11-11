@@ -105,7 +105,7 @@ int	check_death(t_philo *philo, t_list *ph1)
 			if ((c_time() - ph1->death_spv[i]) >= ph1->time_to_die)
 			{
 				pthread_mutex_lock(&ph1->mutexx);
-				printf("%lld %d died\n", c_time() - ph1->death_spv[i], i + 1);
+				printf("%lld %d dead", c_time() - ph1->start , i + 1);
 				exit(-1);
 				break ;
 			}
@@ -121,9 +121,9 @@ int	main(int argc, char **argv)
 	t_list	p_lst;
 	t_philo	*philo;
 
+	philo = malloc(sizeof(t_philo));
 	if ((argc == 5 || argc == 6) && !init_that_shit(argv, &p_lst))
 	{
-		philo = malloc(sizeof(t_philo));
 		if (argc == 6)
 		{
 			p_lst.num_of_rounds = ft_atoi(argv[5]);
